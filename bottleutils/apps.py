@@ -17,7 +17,7 @@ def setup(main_app, sub_apps = [], plugins = [], error_handlers = [], error_hand
             app.install(plugin)
 
         for handler_data in error_handlers:
-            if is_instance(handler_data, list):
+            if isinstance(handler_data, list):
                 range_, handler = handler_data
             else:
                 range_ = range(300, 299)
@@ -28,7 +28,7 @@ def setup(main_app, sub_apps = [], plugins = [], error_handlers = [], error_hand
                     app.error(code)(handler)
 
         for handler_data in error_handler_generators:
-            if is_instance(handler_data, list):
+            if isinstance(handler_data, list):
                 range_, handler = handler_data
             else:
                 range_ = range(300, 299)
