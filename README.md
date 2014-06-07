@@ -7,6 +7,7 @@ Reusable components for bottle
 ### Plugin response.JsonResponsePlugin
 
 The JSON response plugin is a plugin that provides three main features:
+
   * Returns dict or list responses as a JSON object: {"result": <output>}
     * If the response is a dict containing either "result" or "error", the result is returned as-is
   * Catches HTTPResponse exceptions (including the subclass HTTPError) and formats them as a JSON object: {"error": {"code": <http response code>, "message": <exception message>}}
@@ -30,6 +31,7 @@ Given an sqlalchemy engine in the constructor, this plugin creates bottle.reques
 ### Function apps.setup
 
 Set up a collection of apps.  The function accepts the following arguments:
+
   * main_app (required): "main" app on which other apps are mounted
   * sub_apps (optional): List containing either plain application instances (which are not mounted anywhere) or lists containing [app, mountpoint], where the app is mounted to main_app at mountpoint.  The main_app is automatically added to this list - do not add it yourself.
   * plugins (optional): list of plugins to install to all apps
