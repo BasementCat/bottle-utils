@@ -13,9 +13,11 @@ The JSON response plugin is a plugin that provides three main features:
   * Provides an error handler that can be used to replace the standard error handler with one that returns JSON objects
     * The handler must be manually applied for each error code to each app, except as shown below
 
-### response.SQLAlchemyNotFoundPlugin
+## SQLAlchemy
 
-The SQLAlchemy not found plugin converts SQLAlchemy not found exceptions to 404s.  This does NOT raise an error on import if SQLAlchemy is not installed but if it is not, applying the plugin will break!  Apply within the JsonResponsePlugin to turn not found objects into a nicely formatted JSON error message.
+### sqlalchemy.SQLAlchemyNotFoundPlugin
+
+The SQLAlchemy not found plugin converts SQLAlchemy not found exceptions to 404s.  The SQLAlchemy package must be installed, and is NOT a requirement of this package as a whole!  Make sure it is installed or ImportError will be raised.  Apply within the JsonResponsePlugin to turn not found objects into a nicely formatted JSON error message.
 
 ## Apps
 
