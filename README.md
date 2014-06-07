@@ -4,7 +4,7 @@ Reusable components for bottle
 
 ## Responses
 
-### response.JsonResponsePlugin
+### Plugin response.JsonResponsePlugin
 
 The JSON response plugin is a plugin that provides three main features:
   * Returns dict or list responses as a JSON object: {"result": <output>}
@@ -15,13 +15,19 @@ The JSON response plugin is a plugin that provides three main features:
 
 ## SQLAlchemy
 
-### sqlalchemy.SQLAlchemyNotFoundPlugin
+The SQLAlchemy package must be installed, and is NOT a requirement of this package as a whole!  Make sure it is installed or ImportError will be raised.
 
-The SQLAlchemy not found plugin converts SQLAlchemy not found exceptions to 404s.  The SQLAlchemy package must be installed, and is NOT a requirement of this package as a whole!  Make sure it is installed or ImportError will be raised.  Apply within the JsonResponsePlugin to turn not found objects into a nicely formatted JSON error message.
+### Plugin sqlalchemy.SQLAlchemyNotFoundPlugin
+
+The SQLAlchemy not found plugin converts SQLAlchemy not found exceptions to 404s.  Apply within the JsonResponsePlugin to turn not found objects into a nicely formatted JSON error message.
+
+### Plugin sqlalchemy.SQLAlchemySession
+
+Given an sqlalchemy engine in the constructor, this plugin creates bottle.request.sa_session that can be used for querying.  This results in a new session for each thread/request.  The kwarg "autocommit" may also be passed, turning automatic commits on or off (default: True)
 
 ## Apps
 
-### apps.setup
+### Function apps.setup
 
 Set up a collection of apps.  The function accepts the following arguments:
   * main_app (required): "main" app on which other apps are mounted
