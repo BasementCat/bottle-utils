@@ -16,6 +16,8 @@ config = dict(
     url                 = "https://github.com/BasementCat/bottle-utils",
     packages            = ["bottleutils"],
     install_requires    = ["bottle"],
+    test_suite          = "nose.collector",
+    tests_require       = ["nose"],
 )
 
 if __name__ == "__main__":

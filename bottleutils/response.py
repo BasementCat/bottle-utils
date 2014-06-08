@@ -11,20 +11,21 @@ class JsonResponsePlugin(object):
             try:
                 out = callback(*args, **kwargs)
                 if isinstance(out, dict):
-                    if out.keys() == ['result'] or out.keys == ['error']:
+                    if out.keys() == ['result'] or out.keys() == ['error']:
                         return out
+                    return dict(result = out)
                 elif isinstance(out, list):
                     return dict(result = out)
                 else:
                     return out
             except bottle.HTTPResponse as e:
                 if isinstance(e.body, dict):
-                    body = e.body
+                    message = e.body
                 else:
-                    body = dict(message = e.body, code = e.status_code)
+                    message = dict(message = e.body, code = e.status_code)
                 headers = [(k,v) for k,v in e.headers.items()]
                 headers.append(('Content-Type', 'application/json'))
-                raise bottle.HTTPResponse(json.dumps(dict(error = body)), e.status_code, headers = headers)
+                raise bottle.HTTPResponse(json.dumps(dict(error = message)), e.status_code, headers = headers)
         return wrapper
 
     @staticmethod
