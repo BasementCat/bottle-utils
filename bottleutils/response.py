@@ -2,6 +2,9 @@ import json
 
 import bottle
 
+def JsonResponse(callback):
+    return JsonResponsePlugin().apply(callback, None)
+
 class JsonResponsePlugin(object):
     name    = 'JsonResponsePlugin'
     api     = 2
@@ -11,7 +14,7 @@ class JsonResponsePlugin(object):
             try:
                 out = callback(*args, **kwargs)
                 if isinstance(out, dict):
-                    if out.keys() == ['result'] or out.keys() == ['error']:
+                    if 'result' in out or 'error' in out:
                         return out
                     return dict(result = out)
                 elif isinstance(out, list):
