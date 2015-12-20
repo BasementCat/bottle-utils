@@ -20,7 +20,7 @@ def setup(main_app, sub_apps = [], plugins = [], error_handlers = [], error_hand
             if isinstance(handler_data, list):
                 range_, handler = handler_data
             else:
-                range_ = range(300, 299)
+                range_ = range(300, 599)
                 handler = handler_data
 
             for code in bottle.HTTP_CODES:
@@ -31,7 +31,7 @@ def setup(main_app, sub_apps = [], plugins = [], error_handlers = [], error_hand
             if isinstance(handler_data, list):
                 range_, handler = handler_data
             else:
-                range_ = range(300, 299)
+                range_ = range(300, 599)
                 handler = handler_data
 
             for code in bottle.HTTP_CODES:
