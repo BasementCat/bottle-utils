@@ -1,11 +1,14 @@
 import json
+import datetime
 
 import unittest
 import bottle
 import sqlalchemy
 from sqlalchemy.orm.exc import NoResultFound
+import sqlalchemy_utils
+import arrow
 
-from bottleutils.database import SQLAlchemyNotFoundPlugin, SQLAlchemySession
+from bottleutils.database import SQLAlchemyNotFoundPlugin, SQLAlchemySession, SQLAlchemyJsonMixin
 
 class MockSession(object):
     def __init__(self):
@@ -69,3 +72,38 @@ class TestSQLAlchemySession(unittest.TestCase):
 
         self.assertEquals(0, bottle.request.sa_session.commit_calls)
         self.assertEquals(1, bottle.request.sa_session.close_calls)
+
+class TestSQLAlchemyJsonMixin(unittest.TestCase):
+    def setUp(self):
+        class Tester(SQLAlchemyJsonMixin, sqlalchemy.ext.declarative.declarative_base()):
+            __tablename__ = 'tester'
+            intField = sqlalchemy.Column(sqlalchemy.BigInteger(), primary_key=True)
+            strField = sqlalchemy.Column(sqlalchemy.UnicodeText())
+            noneField = sqlalchemy.Column(sqlalchemy.Integer())
+            floatField = sqlalchemy.Column(sqlalchemy.Float())
+            boolField = sqlalchemy.Column(sqlalchemy.Boolean())
+            dateTimeField = sqlalchemy.Column(sqlalchemy.DateTime())
+            arrowField = sqlalchemy.Column(sqlalchemy_utils.ArrowType())
+
+        self.model = Tester
+        self.now_dt = datetime.datetime.utcnow()
+        self.now_arrow = arrow.utcnow()
+        self.instance = self.model(
+            intField=10,
+            strField='hello world',
+            noneField=None,
+            floatField=7.2,
+            boolField=True,
+            dateTimeField=self.now_dt,
+            arrowField=self.now_arrow,
+        )
+
+    def test_json(self):
+        res = json.loads(json.dumps(self.instance.to_json()))
+        self.assertEquals(10, res['intField'])
+        self.assertEquals('hello world', res['strField'])
+        self.assertEquals(None, res['noneField'])
+        self.assertEquals(7.2, res['floatField'])
+        self.assertEquals(True, res['boolField'])
+        self.assertEquals(str(self.now_dt), res['dateTimeField'])
+        self.assertEquals(str(self.now_arrow), res['arrowField'])

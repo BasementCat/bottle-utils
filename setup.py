@@ -17,7 +17,7 @@ config = dict(
     packages            = ["bottleutils"],
     install_requires    = ["bottle"],
     test_suite          = "nose.collector",
-    tests_require       = ["nose", "sqlalchemy"],
+    tests_require       = ["nose", "sqlalchemy", "sqlalchemy-utils", "arrow"],
 )
 
 if __name__ == "__main__":
