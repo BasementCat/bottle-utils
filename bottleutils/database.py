@@ -1,3 +1,4 @@
+import inspect
 import math
 import datetime
 
@@ -43,6 +44,8 @@ class SQLAlchemySession(object):
 
 class SQLAlchemyJsonMixin(object):
     def to_json(self):
+        # TODO: need a more reliable way to do this as the sqlalchemy base class is dynamically defined
+        base = inspect.getmro(self.__class__)[-2]
         out = {}
         for attrname, clsattr in vars(self.__class__).items():
             if isinstance(clsattr, InstrumentedAttribute):
@@ -56,7 +59,7 @@ class SQLAlchemyJsonMixin(object):
 
                 if isinstance(attr, datetime.datetime):
                     attr = str(attr)
-                elif isinstance(attr, self.__class__):
+                elif isinstance(attr, base):
                     continue
 
                 out[attrname] = attr

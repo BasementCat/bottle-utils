@@ -95,7 +95,12 @@ class TestSQLAlchemySession(unittest.TestCase):
 
 class TestSQLAlchemyJsonMixin(unittest.TestCase):
     def setUp(self):
-        class Tester(SQLAlchemyJsonMixin, sqlalchemy.ext.declarative.declarative_base()):
+        Base = sqlalchemy.ext.declarative.declarative_base()
+        class SubModel(SQLAlchemyJsonMixin, Base):
+            __tablename__ = 'submodel'
+            id = sqlalchemy.Column(sqlalchemy.BigInteger(), primary_key=True)
+
+        class Tester(SQLAlchemyJsonMixin, Base):
             __tablename__ = 'tester'
             intField = sqlalchemy.Column(sqlalchemy.BigInteger(), primary_key=True)
             strField = sqlalchemy.Column(sqlalchemy.UnicodeText())
@@ -104,6 +109,8 @@ class TestSQLAlchemyJsonMixin(unittest.TestCase):
             boolField = sqlalchemy.Column(sqlalchemy.Boolean())
             dateTimeField = sqlalchemy.Column(sqlalchemy.DateTime())
             arrowField = sqlalchemy.Column(sqlalchemy_utils.ArrowType())
+            relFieldId = sqlalchemy.Column(sqlalchemy.BigInteger(), sqlalchemy.ForeignKey('submodel.id'))
+            relField = sqlalchemy.orm.relationship('SubModel')
 
         self.model = Tester
         self.now_dt = datetime.datetime.utcnow()
@@ -116,6 +123,7 @@ class TestSQLAlchemyJsonMixin(unittest.TestCase):
             boolField=True,
             dateTimeField=self.now_dt,
             arrowField=self.now_arrow,
+            relField=SubModel(),
         )
 
     def test_json(self):
