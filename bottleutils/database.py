@@ -61,3 +61,36 @@ class SQLAlchemyJsonMixin(object):
 
                 out[attrname] = attr
         return out
+
+class Pagination(object):
+    def __init__(self, query, page=None, per_page=None, default_per_page=25):
+        self.query = query
+        self.count = query.count()
+
+        try:
+            self.page = int(page or bottle.request.query.get('page', 1))
+        except ValueError:
+            self.page = 1
+
+        try:
+            self.per_page = int(per_page or bottle.request.query.get('per_page', default_per_page))
+        except ValueError:
+            self.per_page = default_per_page
+
+        self.pages = int(math.ceil(self.count / float(self.per_page)))
+
+    @property
+    def items(self):
+        return self.query.offset(self.per_page * (self.page - 1)).limit(self.per_page).all()
+
+    @property
+    def json_response(self):
+        return {
+            'result': [v.to_json() if hasattr(v, 'to_json') else str(v) for v in self.items],
+            'pagination': {
+                'page': self.page,
+                'per_page': self.per_page,
+                'count': self.count,
+                'pages': self.pages,
+            }
+        }
