@@ -8,7 +8,7 @@ def read(filen):
  
 config = dict(
     name                = "bottleutils",
-    version             = "0.1.4",
+    version             = "0.1.5",
     description         = "Reusable components for bottle",
     long_description    = read("README.md"),
     author              = "Alec Elton",

@@ -123,7 +123,7 @@ class TestSQLAlchemyJsonMixin(unittest.TestCase):
             boolField=True,
             dateTimeField=self.now_dt,
             arrowField=self.now_arrow,
-            relField=SubModel(),
+            relField=SubModel(id=15),
         )
 
     def test_json(self):
@@ -135,6 +135,18 @@ class TestSQLAlchemyJsonMixin(unittest.TestCase):
         self.assertEquals(True, res['boolField'])
         self.assertEquals(str(self.now_dt), res['dateTimeField'])
         self.assertEquals(str(self.now_arrow), res['arrowField'])
+        self.assertEquals(False, 'relField' in res)
+
+    def test_json_with_rel(self):
+        res = json.loads(json.dumps(self.instance.to_json(with_relationships=['relField'])))
+        self.assertEquals(10, res['intField'])
+        self.assertEquals('hello world', res['strField'])
+        self.assertEquals(None, res['noneField'])
+        self.assertEquals(7.2, res['floatField'])
+        self.assertEquals(True, res['boolField'])
+        self.assertEquals(str(self.now_dt), res['dateTimeField'])
+        self.assertEquals(str(self.now_arrow), res['arrowField'])
+        self.assertEquals(15, res['relField']['id'])
 
 class TestSQLAlchemyPagination(unittest.TestCase):
     def setUp(self):

@@ -58,14 +58,17 @@ class SQLAlchemyJsonMixin(object):
         return self.__model_base_class
 
     
-    def to_json(self):
+    def to_json(self, with_relationships=None):
         base = self._get_model_base_class()
         out = {}
         for attrname, clsattr in vars(self.__class__).items():
             if isinstance(clsattr, InstrumentedAttribute):
                 attr = getattr(self, attrname)
                 if isinstance(attr, InstrumentedList):
-                    continue
+                    if with_relationships and attrname in with_relationships:
+                        attr = [obj.to_json() for obj in attr if hasattr(obj, 'to_json')]
+                    else:
+                        continue
 
                 try:
                     if isinstance(attr, arrow.arrow.Arrow):
@@ -76,7 +79,10 @@ class SQLAlchemyJsonMixin(object):
                 if isinstance(attr, datetime.datetime):
                     attr = str(attr)
                 elif isinstance(attr, base):
-                    continue
+                    if with_relationships and attrname in with_relationships and hasattr(attr, 'to_json'):
+                        attr = attr.to_json()
+                    else:
+                        continue
 
                 out[attrname] = attr
         return out
