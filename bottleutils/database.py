@@ -4,6 +4,7 @@ import datetime
 
 import sqlalchemy
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy.orm.collections import InstrumentedList
 import bottle
 
 try:
@@ -43,13 +44,28 @@ class SQLAlchemySession(object):
         return wrapper
 
 class SQLAlchemyJsonMixin(object):
-    def to_json(self):
+    @classmethod
+    def _get_model_base_class(self):
         # TODO: need a more reliable way to do this as the sqlalchemy base class is dynamically defined
-        base = inspect.getmro(self.__class__)[-2]
+        if not hasattr(self, '__model_base_class'):
+            mro = list(reversed(inspect.getmro(self)))
+            self.__model_base_class = mro[1]
+            # for cls in mro:
+            #     for attr in vars(cls).values():
+            #         if isinstance(attr, InstrumentedAttribute):
+            #             return self.__model_base_class
+            #     self.__model_base_class = cls
+        return self.__model_base_class
+
+    
+    def to_json(self):
+        base = self._get_model_base_class()
         out = {}
         for attrname, clsattr in vars(self.__class__).items():
             if isinstance(clsattr, InstrumentedAttribute):
                 attr = getattr(self, attrname)
+                if isinstance(attr, InstrumentedList):
+                    continue
 
                 try:
                     if isinstance(attr, arrow.arrow.Arrow):
