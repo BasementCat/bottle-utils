@@ -138,7 +138,7 @@ class TestSQLAlchemyJsonMixin(unittest.TestCase):
         self.assertEquals(False, 'relField' in res)
 
     def test_json_with_rel(self):
-        res = json.loads(json.dumps(self.instance.to_json(with_relationships=['relField'])))
+        res = json.loads(json.dumps(self.instance.to_json(with_relationships={'relField': None})))
         self.assertEquals(10, res['intField'])
         self.assertEquals('hello world', res['strField'])
         self.assertEquals(None, res['noneField'])

@@ -66,7 +66,7 @@ class SQLAlchemyJsonMixin(object):
                 attr = getattr(self, attrname)
                 if isinstance(attr, InstrumentedList):
                     if with_relationships and attrname in with_relationships:
-                        attr = [obj.to_json() for obj in attr if hasattr(obj, 'to_json')]
+                        attr = [obj.to_json(with_relationships=with_relationships[attrname]) for obj in attr if hasattr(obj, 'to_json')]
                     else:
                         continue
 
@@ -80,7 +80,7 @@ class SQLAlchemyJsonMixin(object):
                     attr = str(attr)
                 elif isinstance(attr, base):
                     if with_relationships and attrname in with_relationships and hasattr(attr, 'to_json'):
-                        attr = attr.to_json()
+                        attr = attr.to_json(with_relationships=with_relationships[attrname])
                     else:
                         continue
 
